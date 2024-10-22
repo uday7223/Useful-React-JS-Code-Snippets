@@ -1,0 +1,42 @@
+import React, { useEffect, useRef, useState } from "react";
+
+const MyComponent = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isDropdownOpen) {
+      // Attach event listener when dropdown is open
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      // Remove event listener when dropdown is closed
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      // Cleanup the event listener on component unmount
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  return (
+    <div>
+      <button onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+        Toggle Dropdown
+      </button>
+      {isDropdownOpen && (
+        <div ref={dropdownRef} className="dropdown">
+          <p>Dropdown content</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default MyComponent;
